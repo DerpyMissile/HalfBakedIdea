@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
-public class mainMenu : MonoBehaviour
+public class mainMenu : MonoBehaviour, IPointerClickHandler
 {
     public Sprite[] images; // Replace this with an array of your image frames
     public GameObject theVoid;
-    public float frameRate = 0.5f; // The time between frames in seconds
+    public float frameRate = 1.0f; // The time between frames in seconds
     public bool loop = true; // Whether to loop the animation or play it once
 
     private Image image;
@@ -56,6 +57,32 @@ public class mainMenu : MonoBehaviour
         currentFrame = 0;
         timer = 0f;
         isPlaying = true;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            Debug.Log("Image clicked!");
+            StartCoroutine(LoadYourAsyncScene());
+
+        }
+    }
+
+    IEnumerator LoadYourAsyncScene()
+    {
+        // The Application loads the Scene in the background as the current Scene runs.
+        // This is particularly good for creating loading screens.
+        // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
+        // a sceneBuildIndex of 1 as shown in Build Settings.
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("ActualGame");
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 
 }
